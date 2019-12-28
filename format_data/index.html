@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+        .demo_text{
+            /*width: 1200px;*/
+            /*height: 800px;*/
+        }
+    </style>
+</head>
+<body>
+    <div id="demo_text" class="demo_text"></div>
+    <script type="text/javascript" src="./jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="./lnglat_transformation.js"></script>
+    <script src="./assets/mapdata/js/basic_config.js?V2019122302"></script>
+    <script type="text/javascript" src="./data.js"></script>
+<script>
+  // serveRequest("get", service_config.data_server_url+"banner/getBannerList",{ type:"PLAY" },function(result){
+  //       var data = JSON.parse(Decrypt(result.data.resultKey));
+  //       var banner_str = '';
+  //       var toUrl = "./assets/bannerSubPage/visit_scenic_spots/banner_"
+  //       for(var i = 0; i < data.length; i++){
+  //           var item = data[i];
+  //           banner_str += '<div class="swiper-slide"><a href="'+toUrl+(i+1)+".html"+'"><div class="swiper-slide"><a href="'+toUrl+(i+1)+".html"+'"><img src='+ service_config.server_img_url + item.url +' width="100%" data-href='+ toUrl+(i+1)+".html" +' ></div></div>'
+  //       }
+  //       $("#banner .swiper-wrapper").html(banner_str);
+  //       startBanner();
+  //   })
+</script>
+<script>
+    // //墨卡托转经纬度
+    // function _getLngLat(poi){
+    //     var lnglat = [];
+    //     lnglat[0] = poi[0]/20037508.34*180;
+    //     var mmy = poi[1]/20037508.34*180;
+    //     lnglat[1] = 180/Math.PI*(2*Math.atan(Math.exp(mmy*Math.PI/180))-Math.PI/2);
+    //     return lnglat;
+    // }
+    var new_data = [];
+    // for(var i = 0; i < timeLine.length; i++){
+    //     var time_item = timeLine[i];
+    //     var time_data = [];
+    //     for(var j = 0; j < data.features.length; j++){
+    //         var item = data.features[j].properties;
+    //         time_data.push({
+    //             lnglat: wgs84togcj02(item.LON, item.LAT),
+    //             count: item[time_item]
+    //         })
+    //     }
+    //     new_data[time_item] = time_data
+    // }
+    //geojson
+    for(var i = 0; i < data.features.length; i++){
+        var format_lnglat = [];
+        var items = data.features[i];
+        for(var j = 0; j < items.geometry.coordinates[0].length; j++){
+            var lnglat_item = items.geometry.coordinates[0][j];
+            format_lnglat.push(wgs84togcj02(lnglat_item[0], lnglat_item[1]))
+        }
+        new_data.push({
+            // value:items.properties.CU_POP,
+            name:items.properties.BYNAMEC,
+            lnglat:format_lnglat
+        })
+        // new_data.push({
+        //     value:items.properties.CU_POP,
+        //     // name:items.properties.name,
+        //     lnglat: wgs84togcj02(items.geometry.coordinates[0], items.geometry.coordinates[1])
+        // })
+    }
+
+    // //excel
+    // for(var i = 0; i < data.length; i++){
+    //     var items = data[i];
+    //     // new_data.push(items.count)
+    //     new_data.push({
+    //         value:items.value,
+    //         lnglat:wgs84togcj02(items.LON, items.LAT)
+    //     })
+    // }
+    $("#demo_text").html(JSON.stringify(new_data))
+</script>
+</body>
+</html>
